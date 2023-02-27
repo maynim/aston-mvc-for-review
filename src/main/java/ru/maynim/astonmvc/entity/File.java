@@ -18,7 +18,7 @@ public class File {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "dat_files_id_seq")
     @SequenceGenerator(name = "dat_files_id_seq", sequenceName = "dat_files_id_seq", allocationSize = 1)
-    private long id;
+    private Long id;
 
     @Column(name = "name")
     private String name;

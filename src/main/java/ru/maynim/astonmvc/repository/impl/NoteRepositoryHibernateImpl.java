@@ -1,66 +1,72 @@
-package ru.maynim.astonmvc.repository.impl.hibernate;
+package ru.maynim.astonmvc.repository.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
-import ru.maynim.astonmvc.entity.File;
-import ru.maynim.astonmvc.repository.FileRepository;
+import ru.maynim.astonmvc.entity.Note;
+import ru.maynim.astonmvc.repository.NoteRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class FileRepositoryHibernateImpl implements FileRepository {
+public class NoteRepositoryHibernateImpl implements NoteRepository {
 
     private final SessionFactory sessionFactory;
 
     @Override
-    public List<File> findAllWithNotes() {
-        List<File> findFileList;
+    public List<Note> findAllWithUsers() {
+        List<Note> findNoteList;
+
+        try (Session session = sessionFactory.openSession()) {
+            try {
+                session.beginTransaction();
+
+                findNoteList = session.createQuery("select n from Note n join fetch n.user", Note.class)
+                        .getResultList();
+
+                session.getTransaction().commit();
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+
+                throw e;
+            }
+        }
+
+        return findNoteList;
+    }
+
+    @Override
+    public Optional<Note> findById(long id) {
+        Note findNote;
 
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            findFileList = session.createQuery("SELECT f FROM File f JOIN FETCH f.note", File.class)
-                    .getResultList();
+            findNote = session.get(Note.class, id);
 
             session.getTransaction().commit();
         }
 
-        return findFileList;
+        return Optional.ofNullable(findNote);
     }
 
     @Override
-    public Optional<File> findById(long id) {
-        File findFile;
-
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-
-            findFile = session.get(File.class, id);
-
-            session.getTransaction().commit();
-        }
-
-        return Optional.ofNullable(findFile);
-    }
-
-    @Override
-    public int update(long id, File file) {
+    public int update(long id, Note note) {
         try (Session session = sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
 
                 int updatedRows = session.createQuery(
-                                "update File f " +
+                                "update Note n " +
                                         "set name = :name, " +
-                                        "url = :url " +
-                                        "where f.id = :id"
+                                        "content = :content " +
+                                        "where n.id = :id"
                         )
-                        .setParameter("name", file.getName())
-                        .setParameter("url", file.getUrl())
+                        .setParameter("name", note.getName())
+                        .setParameter("content", note.getContent())
                         .setParameter("id", id)
                         .executeUpdate();
 
@@ -81,7 +87,7 @@ public class FileRepositoryHibernateImpl implements FileRepository {
             try {
                 session.beginTransaction();
 
-                session.createQuery("DELETE File f WHERE f.id = :id")
+                session.createQuery("DELETE Note n WHERE n.id = :id")
                         .setParameter("id", id)
                         .executeUpdate();
 
@@ -95,12 +101,12 @@ public class FileRepositoryHibernateImpl implements FileRepository {
     }
 
     @Override
-    public void save(File file) {
+    public void save(Note note) {
         try (Session session = sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
 
-                session.save(file);
+                session.save(note);
 
                 session.getTransaction().commit();
             } catch (Exception e) {
@@ -109,29 +115,5 @@ public class FileRepositoryHibernateImpl implements FileRepository {
                 throw e;
             }
         }
-    }
-
-    @Override
-    public List<File> findAllByNoteId(long id) {
-        List<File> findFileList;
-        try (Session session = sessionFactory.openSession()) {
-            try {
-                session.beginTransaction();
-
-                findFileList = session.createQuery(
-                                "select f from File f join fetch f.note where f.note.id = :id",
-                                File.class
-                        )
-                        .setParameter("id", id)
-                        .getResultList();
-
-                session.getTransaction().commit();
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-
-                throw e;
-            }
-        }
-        return findFileList;
     }
 }

@@ -1,72 +1,66 @@
-package ru.maynim.astonmvc.repository.impl.hibernate;
+package ru.maynim.astonmvc.repository.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
-import ru.maynim.astonmvc.entity.Note;
-import ru.maynim.astonmvc.repository.NoteRepository;
+import ru.maynim.astonmvc.entity.Role;
+import ru.maynim.astonmvc.repository.RoleRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class NoteRepositoryHibernateImpl implements NoteRepository {
+public class RoleRepositoryHibernateImpl implements RoleRepository {
 
     private final SessionFactory sessionFactory;
 
     @Override
-    public List<Note> findAllWithUsers() {
-        List<Note> findNoteList;
-
-        try (Session session = sessionFactory.openSession()) {
-            try {
-                session.beginTransaction();
-
-                findNoteList = session.createQuery("select n from Note n join fetch n.user", Note.class)
-                        .getResultList();
-
-                session.getTransaction().commit();
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-
-                throw e;
-            }
-        }
-
-        return findNoteList;
-    }
-
-    @Override
-    public Optional<Note> findById(long id) {
-        Note findNote;
+    public List<Role> findAllWithUsers() {
+        List<Role> findRoleList;
 
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            findNote = session.get(Note.class, id);
+            findRoleList = session.createQuery("select r from Role r join fetch r.users", Role.class)
+                    .getResultList();
 
             session.getTransaction().commit();
         }
 
-        return Optional.ofNullable(findNote);
+        return findRoleList;
     }
 
     @Override
-    public int update(long id, Note note) {
+    public Optional<Role> findById(long id) {
+        Role findRole;
+
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            findRole = session.get(Role.class, id);
+
+            session.getTransaction().commit();
+        }
+
+        return Optional.ofNullable(findRole);
+    }
+
+    @Override
+    public int update(long id, Role role) {
         try (Session session = sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
 
                 int updatedRows = session.createQuery(
-                                "update Note n " +
+                                "update Role r " +
                                         "set name = :name, " +
-                                        "content = :content " +
-                                        "where n.id = :id"
+                                        "description = :description " +
+                                        "where r.id = :id"
                         )
-                        .setParameter("name", note.getName())
-                        .setParameter("content", note.getContent())
+                        .setParameter("name", role.getName())
+                        .setParameter("description", role.getDescription())
                         .setParameter("id", id)
                         .executeUpdate();
 
@@ -87,7 +81,7 @@ public class NoteRepositoryHibernateImpl implements NoteRepository {
             try {
                 session.beginTransaction();
 
-                session.createQuery("DELETE Note n WHERE n.id = :id")
+                session.createQuery("DELETE Role r WHERE r.id = :id")
                         .setParameter("id", id)
                         .executeUpdate();
 
@@ -101,12 +95,12 @@ public class NoteRepositoryHibernateImpl implements NoteRepository {
     }
 
     @Override
-    public void save(Note note) {
+    public void save(Role role) {
         try (Session session = sessionFactory.openSession()) {
             try {
                 session.beginTransaction();
 
-                session.save(note);
+                session.save(role);
 
                 session.getTransaction().commit();
             } catch (Exception e) {
@@ -115,5 +109,19 @@ public class NoteRepositoryHibernateImpl implements NoteRepository {
                 throw e;
             }
         }
+    }
+
+    @Override
+    public List<Role> findAll() {
+        List<Role> findRoleList;
+        try (Session session = sessionFactory.openSession()) {
+
+            session.beginTransaction();
+
+            findRoleList = session.createQuery("select r from Role r", Role.class).getResultList();
+
+            session.getTransaction().commit();
+        }
+        return findRoleList;
     }
 }

@@ -1,4 +1,4 @@
-package ru.maynim.astonmvc.repository.impl.hibernate;
+package ru.maynim.astonmvc.repository.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
