@@ -1,7 +1,6 @@
 package ru.maynim.astonmvc.service.impl;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import ru.maynim.astonmvc.entity.Note;
 import ru.maynim.astonmvc.repository.NoteRepository;
@@ -10,12 +9,15 @@ import ru.maynim.astonmvc.service.NoteService;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
-@Slf4j
 @Component
-@RequiredArgsConstructor
 public class NoteServiceImpl implements NoteService {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(NoteServiceImpl.class);
     private final NoteRepository noteRepository;
+
+    public NoteServiceImpl(NoteRepository noteRepository) {
+        this.noteRepository = noteRepository;
+    }
 
     @Override
     public List<Note> findAllWithUsers() {

@@ -1,6 +1,5 @@
 package ru.maynim.astonmvc.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,13 +9,18 @@ import ru.maynim.astonmvc.service.NoteService;
 import ru.maynim.astonmvc.service.UserService;
 
 @Controller
-@RequiredArgsConstructor
 @RequestMapping("/notes")
 public class NoteController {
 
     private final NoteService noteService;
     private final UserService userService;
     private final FileService fileService;
+
+    public NoteController(NoteService noteService, UserService userService, FileService fileService) {
+        this.noteService = noteService;
+        this.userService = userService;
+        this.fileService = fileService;
+    }
 
     @GetMapping()
     public String findAllNotes(Model model) {

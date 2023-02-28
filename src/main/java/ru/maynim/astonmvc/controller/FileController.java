@@ -1,6 +1,5 @@
 package ru.maynim.astonmvc.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -9,12 +8,16 @@ import ru.maynim.astonmvc.service.FileService;
 import ru.maynim.astonmvc.service.NoteService;
 
 @Controller
-@RequiredArgsConstructor
 @RequestMapping("/files")
 public class FileController {
 
     private final FileService fileService;
     private final NoteService noteService;
+
+    public FileController(FileService fileService, NoteService noteService) {
+        this.fileService = fileService;
+        this.noteService = noteService;
+    }
 
 
     @GetMapping()

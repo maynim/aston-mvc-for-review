@@ -1,6 +1,5 @@
 package ru.maynim.astonmvc.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,10 +10,13 @@ import ru.maynim.astonmvc.service.UserService;
 
 @Controller
 @RequestMapping("/user-roles")
-@RequiredArgsConstructor
 public class UserRoleController {
 
     private final UserService userService;
+
+    public UserRoleController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping()
     public String findAllUsers(Model model) {

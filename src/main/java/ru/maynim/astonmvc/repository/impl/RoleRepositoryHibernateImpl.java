@@ -1,6 +1,5 @@
 package ru.maynim.astonmvc.repository.impl;
 
-import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
@@ -11,10 +10,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-@RequiredArgsConstructor
 public class RoleRepositoryHibernateImpl implements RoleRepository {
 
     private final SessionFactory sessionFactory;
+
+    public RoleRepositoryHibernateImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public List<Role> findAllWithUsers() {
@@ -81,7 +83,7 @@ public class RoleRepositoryHibernateImpl implements RoleRepository {
             try {
                 session.beginTransaction();
 
-                session.createQuery("DELETE Role r WHERE r.id = :id")
+                session.createQuery("delete Role r where r.id = :id")
                         .setParameter("id", id)
                         .executeUpdate();
 

@@ -1,6 +1,5 @@
 package ru.maynim.astonmvc.config;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,10 +14,13 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 @Configuration
 @EnableWebMvc
 @ComponentScan("ru.maynim.astonmvc")
-@RequiredArgsConstructor
 public class SpringConfig implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
+
+    public SpringConfig(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
     @Bean
     public SpringResourceTemplateResolver templateResolver() {

@@ -1,7 +1,6 @@
 package ru.maynim.astonmvc.service.impl;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import ru.maynim.astonmvc.entity.Role;
 import ru.maynim.astonmvc.entity.User;
@@ -11,12 +10,15 @@ import ru.maynim.astonmvc.service.UserService;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
-@Slf4j
 @Component
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public List<User> findAll() {

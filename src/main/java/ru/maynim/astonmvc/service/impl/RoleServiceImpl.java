@@ -1,7 +1,6 @@
 package ru.maynim.astonmvc.service.impl;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import ru.maynim.astonmvc.entity.Role;
 import ru.maynim.astonmvc.repository.RoleRepository;
@@ -10,12 +9,15 @@ import ru.maynim.astonmvc.service.RoleService;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
-@Slf4j
 @Component
-@RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(RoleServiceImpl.class);
     private final RoleRepository roleRepository;
+
+    public RoleServiceImpl(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     @Override
     public List<Role> findAllWithUsers() {

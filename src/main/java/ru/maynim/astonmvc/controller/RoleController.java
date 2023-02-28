@@ -1,6 +1,5 @@
 package ru.maynim.astonmvc.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -9,10 +8,13 @@ import ru.maynim.astonmvc.service.RoleService;
 
 @Controller
 @RequestMapping("/roles")
-@RequiredArgsConstructor
 public class RoleController {
 
     private final RoleService roleService;
+
+    public RoleController(RoleService roleService) {
+        this.roleService = roleService;
+    }
 
     @GetMapping()
     public String findAllRoles(Model model) {

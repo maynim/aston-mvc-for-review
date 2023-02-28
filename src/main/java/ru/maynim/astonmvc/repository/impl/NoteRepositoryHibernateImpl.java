@@ -1,6 +1,5 @@
 package ru.maynim.astonmvc.repository.impl;
 
-import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
@@ -11,10 +10,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-@RequiredArgsConstructor
 public class NoteRepositoryHibernateImpl implements NoteRepository {
 
     private final SessionFactory sessionFactory;
+
+    public NoteRepositoryHibernateImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public List<Note> findAllWithUsers() {
@@ -87,7 +89,7 @@ public class NoteRepositoryHibernateImpl implements NoteRepository {
             try {
                 session.beginTransaction();
 
-                session.createQuery("DELETE Note n WHERE n.id = :id")
+                session.createQuery("delete Note n where n.id = :id")
                         .setParameter("id", id)
                         .executeUpdate();
 

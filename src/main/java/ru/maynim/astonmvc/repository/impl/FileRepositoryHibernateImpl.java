@@ -1,6 +1,5 @@
 package ru.maynim.astonmvc.repository.impl;
 
-import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
@@ -11,10 +10,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-@RequiredArgsConstructor
 public class FileRepositoryHibernateImpl implements FileRepository {
 
     private final SessionFactory sessionFactory;
+
+    public FileRepositoryHibernateImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public List<File> findAllWithNotes() {
@@ -23,7 +25,7 @@ public class FileRepositoryHibernateImpl implements FileRepository {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            findFileList = session.createQuery("SELECT f FROM File f JOIN FETCH f.note", File.class)
+            findFileList = session.createQuery("select f from File f join fetch f.note", File.class)
                     .getResultList();
 
             session.getTransaction().commit();
@@ -81,7 +83,7 @@ public class FileRepositoryHibernateImpl implements FileRepository {
             try {
                 session.beginTransaction();
 
-                session.createQuery("DELETE File f WHERE f.id = :id")
+                session.createQuery("delete File f where f.id = :id")
                         .setParameter("id", id)
                         .executeUpdate();
 
